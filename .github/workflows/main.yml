@@ -1,81 +1,104 @@
-name: Pratice Pipeline
+name: DevSecOps Pipeline 
 
-on:
- push:
-   branches:
-     - master
- workflow_dispatch:
- 
-jobs:
-   build_and_package:
-   name: BUILD-JOB 
-   runs-on: ${{ matrix.os }}
+on: 
+  push: 
+    branches: 
+      - master 
 
-strategy:
-   matrix:
+jobs: 
+  build_and_package: 
+    name: BUILD-JOB 
+    runs-on: ubuntu-slim 
 
-     os:
-      - ubuntu-slim
-     node-version:
-      - 18
-      - 20
-      - 22
-     language:
-      - javascript-typescript
+    permissions: 
+      actions: read 
+      contents: read 
+      security-events: write # Required to upload findings to the Security tab 
 
+    strategy: 
+      fail-fast: false 
+      matrix: 
+        language: ['javascript-typescript'] 
 
-permissions:
-   actions: read
-   contents: read
-   security-events: write
+    steps: 
 
-steps:
+      - name: Checkout Code 
+        uses: actions/checkout@v4 
 
-   - name: checkout code
-     uses: actions/checkout@v4
+      - name: Initialize CodeQL 
+        uses: github/codeql-action/init@v3 
+        with: 
+          languages: ${{ matrix.language }} 
 
-   - name: Setup node.js
-     uses: actions/setup-node@v4
-     with:
-       node-version: ${{ matrix.node-version }}
+      - name: Autobuild 
+        uses: github/codeql-action/autobuild@v3 
 
-   - name: Cache Dependencies
-     uses: actions/cache@v5
-     with:
-       path: ~/.npm
-       keys: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
-       restore-keys:
-         ${{ runner.os }}-node-${{ matrix.node-version }}
+      - name: Perform CodeQL Analysis 
+        uses: github/codeql-action/analyze@v3 
+        with: 
+          category: "/language:${{ matrix.language }}" 
 
-   - name: Initilaze CodeQL
-     uses: github/codeql-action/init@v4
-     with:
-        language: ${{ matrix.language }}
+      - name: BUILD 
+        run: npm install 
 
-   - name: Autobuild
-     uses: github/codeql-action/autobuild@v4
+      - name: TEST 
+        run: echo "code is tested!" 
 
-   - name: CodeQL Analysis
-     uses: github/codeql-action/analyze@v4
-     with:
-       category: "/language:${{ matrix.language }}"
-       
-   - name: Install Dependencies
-     run: npm install
+      - name: Artifact upload 
+        uses: actions/upload-artifact@v7 
+        with: 
+          name: artifact-1 
+          path: | 
+            package* 
+name: DevSecOps Pipeline 
 
-   - name: Test
-     run: echo "Code is tested"
+on: 
+  push: 
+    branches: 
+      - master 
 
-   - name: Artifact Upload
-     uses: actions/upload-artifact@v7
-     with:
-       name: artifact-${{ runner.os }}-node-${{ matrix.node-version }}
-       path: |
-         package*
+jobs: 
+  build_and_package: 
+    name: BUILD-JOB 
+    runs-on: ubuntu-slim 
 
-   - name: Deploy
-     run: echo "Code is Deployed"
+    permissions: 
+      actions: read 
+      contents: read 
+      security-events: write # Required to upload findings to the Security tab 
 
-   - name: Rollback
-     if: failure()
-     run: echo "rollback is done"
+    strategy: 
+      fail-fast: false 
+      matrix: 
+        language: ['javascript-typescript'] 
+
+    steps: 
+
+      - name: Checkout Code 
+        uses: actions/checkout@v4 
+
+      - name: Initialize CodeQL 
+        uses: github/codeql-action/init@v3 
+        with: 
+          languages: ${{ matrix.language }} 
+
+      - name: Autobuild 
+        uses: github/codeql-action/autobuild@v3 
+
+      - name: Perform CodeQL Analysis 
+        uses: github/codeql-action/analyze@v3 
+        with: 
+          category: "/language:${{ matrix.language }}" 
+
+      - name: BUILD 
+        run: npm install 
+
+      - name: TEST 
+        run: echo "code is tested!" 
+
+      - name: Artifact upload 
+        uses: actions/upload-artifact@v7 
+        with: 
+          name: artifact-1 
+          path: | 
+            package* 
