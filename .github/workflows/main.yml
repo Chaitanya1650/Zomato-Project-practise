@@ -8,8 +8,7 @@ on:
  
 jobs:
    build_and_package:
-   name: BUILD-JOB
-   if: github.ref == 'refs/heads/master' && github.event_name == 'push' 
+   name: BUILD-JOB 
    runs-on: ${{ matrix.os }}
 
 strategy:
@@ -17,13 +16,10 @@ strategy:
 
      os:
       - ubuntu-slim
-      - ubuntu-latest
-
      node-version:
       - 18
       - 20
       - 22
-
      language:
       - javascript-typescript
 
