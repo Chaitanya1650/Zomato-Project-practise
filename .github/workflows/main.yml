@@ -24,16 +24,3 @@ inputs:
       description: "Deploy?"
       required: true
       type: boolean
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-outputs:
-    build_status: ${{ steps.build.outputs.status }}
-
-steps:
-  - name: Build
-    id: build
-    run: |
-      echo "status=Build Successful" >> "$GITHUB_OUTPUT"
