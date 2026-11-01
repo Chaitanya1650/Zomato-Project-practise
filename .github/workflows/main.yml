@@ -8,23 +8,23 @@ on:
 
 jobs: 
   build: 
-  runs-on: self-hosted 
+    runs-on: self-hosted 
   
-  steps: 
-    - name: Checkout Code 
-      uses: actions/checkout@v4 
+    steps: 
+      - name: Checkout Code 
+        uses: actions/checkout@v4 
 
-    - name: Cache Dependencies 
-      uses: actions/cache@v4 
-      with: 
-        path: ~/.npm 
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} 
+      - name: Cache Dependencies 
+        uses: actions/cache@v4 
+        with: 
+          path: ~/.npm 
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} 
  
-    - name: Build 
-      run: npm install 
+      - name: Build 
+        run: npm install 
  
-    - name: test 
-      run: echo "code is tested" 
+      - name: test 
+        run: echo "code is tested" 
  
-    - name: deploy 
-      run: echo "code is deployed" 
+      - name: deploy 
+        run: echo "code is deployed" 
