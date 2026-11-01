@@ -1,32 +1,29 @@
-name: Demo Pipeline
+name: Job Output Demo
 
 on:
  push:
    branches:
      - master
  workflow_dispatch:
-   inputs:
-     environment:
-       description: 'Select Environment'
-       required: true
-       type: choice
-       options:
-         - dev
-         - test
-         - prod
-         
-     username:
-       description: 'Enter Username:'
-       required: true
-       type: string
 
 jobs:
-  demo:
-    runs-on: ubuntu-slim
+  job1:
+    runs-on: ubuntu-latest
+
+    outputs:
+      app_version: ${{ steps.version.outputs.version }}
 
     steps:
-      - name: Display Inputs
+      - name: Generate Version
+        id: version
         run: |
-          echo "Environment: ${{ inputs.environment }}"
-          echo "Username: ${{ inputs.username }}"
-    
+          echo "version=2.5.0" >> $GITHUB_OUTPUT
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+
+    steps:
+      - name: Read Job Output
+        run: |
+          echo "Application Version: ${{ needs.job1.outputs.app_version }}"
