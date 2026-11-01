@@ -1,26 +1,29 @@
-name: Secure DevSecOps Pipeline 
+name: Demo Pipeline
 
-on: 
- push: 
-   branches: 
-     - master 
- workflow_dispatch: 
-inputs:
-    username:
-      description: "Enter username"
-      required: true
-      type: string
+on:
+ workflow_dispatch:
+   inputs:
+     environment:
+       description: 'Select Environment'
+       required: true
+       type: choice
+       options:
+         - dev
+         - test
+         - prod
+         
+     username:
+       description: 'Enter Username:'
+       required: true
+       type: string
 
-    environment:
-      description: "Select environment"
-      required: true
-      type: choice
-      options:
-        - dev
-        - staging
-        - production
+jobs:
+  demo:
+    runs-on: ubuntu-slim
 
-    deploy:
-      description: "Deploy?"
-      required: true
-      type: boolean
+    steps:
+      - name: Display Inputs
+        run: |
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Username: ${{ inputs.username }}"
+    
